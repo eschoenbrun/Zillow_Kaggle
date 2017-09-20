@@ -1,6 +1,14 @@
 import csv
-import pandas
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+%matplotlib inline
 
 prop_data = pd.read_csv('C:/Users/Stevens/Desktop/BIA 686/zillow/bia_686/data/properties_2016.csv', header='infer')
 train_data = pd.read_csv('C:/Users/Stevens/Desktop/BIA 686/zillow/bia_686/data/train_2016_v2.csv', header='infer')
 
+stats = prop_data.describe()
+prop_data.dtypes
+
+plt.figure(figsize=(10, 5))
+sns.distplot(train.price_doc, kde = False)
