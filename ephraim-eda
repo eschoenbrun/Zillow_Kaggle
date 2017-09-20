@@ -1,0 +1,6 @@
+import csv
+import pandas
+
+prop_data = pd.read_csv('C:/Users/Stevens/Desktop/BIA 686/zillow/bia_686/data/properties_2016.csv', header='infer')
+train_data = pd.read_csv('C:/Users/Stevens/Desktop/BIA 686/zillow/bia_686/data/train_2016_v2.csv', header='infer')
+
