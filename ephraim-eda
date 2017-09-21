@@ -4,11 +4,42 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 %matplotlib inline
 
-prop_data = pd.read_csv('C:/Users/Stevens/Desktop/BIA 686/zillow/bia_686/data/properties_2016.csv', header='infer')
-train_data = pd.read_csv('C:/Users/Stevens/Desktop/BIA 686/zillow/bia_686/data/train_2016_v2.csv', header='infer')
+## Load Data
+df = pd.read_csv('C:/Users/Stevens/Desktop/BIA 686/zillow/bia_686/data/properties_2016.csv', header='infer')
+target = pd.read_csv('C:/Users/Stevens/Desktop/BIA 686/zillow/bia_686/data/train_2016_v2.csv', header='infer')
 
-stats = prop_data.describe()
-prop_data.dtypes
+# Determine data types 
+# df.iloc[:, np.r_[22,32,34,49,55]]
 
+# Should we change date from float to datetime?
+# pd.to_datetime(prop_data.assessmentyear).dt.year.head(5)
+# pd.to_datetime(prop_data.assessmentyear)
+# pd.to_datetime(prop_data.taxdelinquencyyear)
+# pd.to_datetime(prop_data.yearbuilt)
+
+## Format dates
+target.transactiondate = pd.to_datetime(target.transactiondate,format='%Y-%m-%d')
+
+## Join dataframes
+joined_data = pd.merge(target,df,on="parcelid",how="left")
+
+# Database characteristics
+joined_data.info()
+joined_data.describe()
+joined_data.dtypes
+
+# Graphs
 plt.figure(figsize=(10, 5))
-sns.distplot(train.price_doc, kde = False)
+sns.boxplot(joined_data.finishedsquarefeet15.dropna())
+plt.hist(joined_data.finishedsquarefeet15.dropna())
+plt.style.use = 'default'
+joined_data.boxplot()
+
+num_cols = ['parcelid','basementsqft',	'bathroomcnt',	'bedroomcnt',	'calculatedbathnbr', 'calculatedfinishedsquarefeet',	'finishedfloor1squarefeet',	'finishedsquarefeet12',	'finishedsquarefeet13',	'finishedsquarefeet15',	'finishedsquarefeet50',	'finishedsquarefeet6',	'fireplacecnt',	'fullbathcnt',	'garagecarcnt',	'garagetotalsqft',	'landtaxvaluedollarcnt',	'lotsizesquarefeet',	'numberofstories',	'poolcnt',	'poolsizesum',	'roomcnt',	'structuretaxvaluedollarcnt',	'taxamount',	'taxvaluedollarcnt',	'threequarterbathnbr',	'unitcnt',	'yardbuildingsqft17',	'yardbuildingsqft26']
+
+for col in num_cols:
+    joined_data[col] = joined_data[col].apply(lambda x: int(x) if x == x else "")
+
+
+joined_data.plot(kind='density', subplots=True, layout=(10,3), sharex=False)
+plt.show()
