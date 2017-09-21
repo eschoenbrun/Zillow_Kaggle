@@ -1,0 +1,59 @@
+Feature,Description,data type
+'airconditioningtypeid',Type of cooling system present in the home (if any),factor
+'architecturalstyletypeid',"Architectural style of the home (i.e. ranch, colonial, split-level, etc…)",factor
+'assessmentyear',The year of the property tax assessment ,datetime
+'basementsqft',Finished living area below or partially below ground level,numeric
+'bathroomcnt',Number of bathrooms in home including fractional bathrooms,numeric
+'bedroomcnt',Number of bedrooms in home,numeric
+'buildingclasstypeid',"The building framing type (steel frame, wood frame, concrete/brick) ",factor
+'buildingqualitytypeid',Overall assessment of condition of the building from best (lowest) to worst (highest),factor
+'calculatedbathnbr',Number of bathrooms in home including fractional bathroom,numeric
+'calculatedfinishedsquarefeet',Calculated total finished living area of the home,numeric
+'censustractandblock',Census tract and block ID combined - also contains blockgroup assignment by extension,factor
+'decktypeid',Type of deck (if any) present on parcel,factor
+'finishedfloor1squarefeet',Size of the finished living area on the first (entry) floor of the home,numeric
+'finishedsquarefeet12',Finished living area,numeric
+'finishedsquarefeet13',Perimeter  living area,numeric
+'finishedsquarefeet15',Total area,numeric
+'finishedsquarefeet50',Size of the finished living area on the first (entry) floor of the home,numeric
+'finishedsquarefeet6',Base unfinished and finished area,numeric
+'fips',Federal Information Processing Standard code - see https://en.wikipedia.org/wiki/FIPS_county_code for more details,factor
+'fireplacecnt',Number of fireplaces in a home (if any),numeric
+'fireplaceflag',Is a fireplace present in this home,factor
+'fullbathcnt',"Number of full bathrooms (sink, shower + bathtub, and toilet) present in home",numeric
+'garagecarcnt',Total number of garages on the lot including an attached garage,numeric
+'garagetotalsqft',Total number of square feet of all garages on lot including an attached garage,numeric
+'hashottuborspa',Does the home have a hot tub or spa,factor
+'heatingorsystemtypeid',Type of home heating system,factor
+'landtaxvaluedollarcnt',The assessed value of the land area of the parcel,numeric
+'latitude',Latitude of the middle of the parcel multiplied by 10e6,factor
+'longitude',Longitude of the middle of the parcel multiplied by 10e6,factor
+'lotsizesquarefeet',Area of the lot in square feet,numeric
+'numberofstories',Number of stories or levels the home has,numeric
+'parcelid',Unique identifier for parcels (lots),factor
+'poolcnt',Number of pools on the lot (if any),numeric
+'poolsizesum',Total square footage of all pools on property,numeric
+'pooltypeid10',Spa or Hot Tub,factor
+'pooltypeid2',Pool with Spa/Hot Tub,factor
+'pooltypeid7',Pool without hot tub,factor
+'propertycountylandusecode',County land use code i.e. it's zoning at the county level,factor
+'propertylandusetypeid',Type of land use the property is zoned for,factor
+'propertyzoningdesc',Description of the allowed land uses (zoning) for that property,string
+'rawcensustractandblock',Census tract and block ID combined - also contains blockgroup assignment by extension,factor
+'regionidcity',City in which the property is located (if any),factor
+'regionidcounty',County in which the property is located,factor
+'regionidneighborhood',Neighborhood in which the property is located,factor
+'regionidzip',Zip code in which the property is located,factor
+'roomcnt',Total number of rooms in the principal residence,numeric
+'storytypeid',"Type of floors in a multi-story house (i.e. basement and main level, split-level, attic, etc.). See tab for details.",factor
+'structuretaxvaluedollarcnt',The assessed value of the built structure on the parcel,numeric
+'taxamount',The total property tax assessed for that assessment year,numeric
+'taxdelinquencyflag',Property taxes for this parcel are past due as of 2015,numeric
+'taxdelinquencyyear',Year for which the unpaid propert taxes were due ,datetime
+'taxvaluedollarcnt',The total tax assessed value of the parcel,numeric
+'threequarterbathnbr',Number of 3/4 bathrooms in house (shower + sink + toilet),numeric
+'typeconstructiontypeid',What type of construction material was used to construct the home,factor
+'unitcnt',"Number of units the structure is built into (i.e. 2 = duplex, 3 = triplex, etc...)",numeric
+'yardbuildingsqft17',Patio in  yard,numeric
+'yardbuildingsqft26',Storage shed/building in yard,numeric
+'yearbuilt',The Year the principal residence was built,datetime
