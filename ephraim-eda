@@ -28,18 +28,27 @@ joined_data.info()
 joined_data.describe()
 joined_data.dtypes
 
-# Graphs
-plt.figure(figsize=(10, 5))
-sns.boxplot(joined_data.finishedsquarefeet15.dropna())
-plt.hist(joined_data.finishedsquarefeet15.dropna())
-plt.style.use = 'default'
-joined_data.boxplot()
-
+# Numerical Data
 num_cols = ['parcelid','basementsqft',	'bathroomcnt',	'bedroomcnt',	'calculatedbathnbr', 'calculatedfinishedsquarefeet',	'finishedfloor1squarefeet',	'finishedsquarefeet12',	'finishedsquarefeet13',	'finishedsquarefeet15',	'finishedsquarefeet50',	'finishedsquarefeet6',	'fireplacecnt',	'fullbathcnt',	'garagecarcnt',	'garagetotalsqft',	'landtaxvaluedollarcnt',	'lotsizesquarefeet',	'numberofstories',	'poolcnt',	'poolsizesum',	'roomcnt',	'structuretaxvaluedollarcnt',	'taxamount',	'taxvaluedollarcnt',	'threequarterbathnbr',	'unitcnt',	'yardbuildingsqft17',	'yardbuildingsqft26']
+num_data = joined_data[num_cols]
 
-for col in num_cols:
-    joined_data[col] = joined_data[col].apply(lambda x: int(x) if x == x else "")
+# Database characteristics
+num_data.info()
+num_data.describe()
 
-
-joined_data.plot(kind='density', subplots=True, layout=(10,3), sharex=False)
-plt.show()
+# Graphs
+plt.style.use('fivethirtyeight')
+for i, col in enumerate(num_data.columns):
+    plt.figure(i)
+    plt.subplot(1, 2, 1)
+    # Log transformation for skewed data
+    sns.distplot(np.log1p(num_data[col].dropna()), color = "orange", kde = True)
+    plt.xlabel(col)
+    
+    plt.subplot(1, 2, 2)
+    sns.boxplot(num_data[col].dropna(), orient='v')
+    plt.xlabel(col)
+    
+    plt.tight_layout()
+    plt.show()
+    
