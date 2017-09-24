@@ -29,7 +29,7 @@ joined_data.describe()
 joined_data.dtypes
 
 # Numerical Data
-num_cols = ['parcelid','basementsqft',	'bathroomcnt',	'bedroomcnt',	'calculatedbathnbr', 'calculatedfinishedsquarefeet',	'finishedfloor1squarefeet',	'finishedsquarefeet12',	'finishedsquarefeet13',	'finishedsquarefeet15',	'finishedsquarefeet50',	'finishedsquarefeet6',	'fireplacecnt',	'fullbathcnt',	'garagecarcnt',	'garagetotalsqft',	'landtaxvaluedollarcnt',	'lotsizesquarefeet',	'numberofstories',	'poolcnt',	'poolsizesum',	'roomcnt',	'structuretaxvaluedollarcnt',	'taxamount',	'taxvaluedollarcnt',	'threequarterbathnbr',	'unitcnt',	'yardbuildingsqft17',	'yardbuildingsqft26']
+num_cols = ['parcelid', 'logerror', 'basementsqft',	'bathroomcnt',	'bedroomcnt',	'calculatedbathnbr', 'calculatedfinishedsquarefeet',	'finishedfloor1squarefeet',	'finishedsquarefeet12',	'finishedsquarefeet13',	'finishedsquarefeet15',	'finishedsquarefeet50',	'finishedsquarefeet6',	'fireplacecnt',	'fullbathcnt',	'garagecarcnt',	'garagetotalsqft',	'landtaxvaluedollarcnt',	'lotsizesquarefeet',	'numberofstories',	'poolcnt',	'poolsizesum',	'roomcnt',	'structuretaxvaluedollarcnt',	'taxamount',	'taxvaluedollarcnt',	'threequarterbathnbr',	'unitcnt',	'yardbuildingsqft17',	'yardbuildingsqft26']
 num_data = joined_data[num_cols]
 
 # Database characteristics
@@ -38,17 +38,24 @@ num_data.describe()
 
 # Graphs
 plt.style.use('fivethirtyeight')
-for i, col in enumerate(num_data.columns):
-    plt.figure(i)
-    plt.subplot(1, 2, 1)
+for i, col in enumerate(num_data.columns[2:]):
+    fig = plt.figure(i)
+    ax1 = fig.add_subplot(221)
+    ax2 = fig.add_subplot(222)
+    ax3 = fig.add_subplot(223)
+    
     # Log transformation for skewed data
-    sns.distplot(np.log1p(num_data[col].dropna()), color = "orange", kde = True)
+    sns.distplot(np.log1p(num_data[col].dropna()), color = "orange", kde = True, ax=ax1)
+    
+    sns.boxplot(num_data[col].dropna(), orient='v', ax=ax2)
     plt.xlabel(col)
     
-    plt.subplot(1, 2, 2)
-    sns.boxplot(num_data[col].dropna(), orient='v')
-    plt.xlabel(col)
+    num_data[col] = np.log1p(num_data[col].dropna())
+    g = sns.regplot(x=col, y='logerror', data=num_data, ax=ax3 ,ci = False,
+        scatter_kws={"color":"darkred","alpha":0.3,"s":90},
+        line_kws={"color":"g","alpha":0.5,"lw":4},marker="x")
     
     plt.tight_layout()
     plt.show()
-    
+
+
