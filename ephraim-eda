@@ -4,9 +4,10 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 %matplotlib inline
 
+
 ## Load Data
-df = pd.read_csv('C:/Users/Stevens/Desktop/BIA 686/zillow/bia_686/data/properties_2016.csv', header='infer')
-target = pd.read_csv('C:/Users/Stevens/Desktop/BIA 686/zillow/bia_686/data/train_2016_v2.csv', header='infer')
+df = pd.read_csv('data/properties_2016.csv', header='infer')
+target = pd.read_csv('data/train_2016_v2.csv', header='infer')
 
 # Determine data types 
 # df.iloc[:, np.r_[22,32,34,49,55]]
@@ -35,6 +36,17 @@ num_data = joined_data[num_cols]
 # Database characteristics
 num_data.info()
 num_data.describe()
+zeros = (num_data[:] == 0).sum()/len(num_data)*100
+zeros = zeros.reset_index()
+
+nulls = num_data.isnull().sum()/len(num_data)*100
+nulls = nulls.reset_index()
+
+stats = pd.merge(zeros, nulls, on='index')
+stats.columns = ['factors', 'perc_zero', 'perc_null']      
+stats.sort_values('perc_zero', inplace=True)
+stats.perc_zero.index = stats.factors
+stats.perc_zero.plot(kind='bar', figsize=(24,6))
 
 # Graphs
 plt.style.use('fivethirtyeight')
@@ -45,8 +57,6 @@ for i, col in enumerate(num_data.columns[2:]):
     ax3 = fig.add_subplot(223)
     
     # Log transformation for skewed data
-    sns.distplot(np.log1p(num_data[col].dropna()), color = "orange", kde = True, ax=ax1)
-    
     sns.boxplot(num_data[col].dropna(), orient='v', ax=ax2)
     plt.xlabel(col)
     
@@ -55,6 +65,8 @@ for i, col in enumerate(num_data.columns[2:]):
         scatter_kws={"color":"darkred","alpha":0.3,"s":90},
         line_kws={"color":"g","alpha":0.5,"lw":4},marker="x")
     
+    sns.distplot(np.log1p(num_data[col].dropna()), color = "orange", kde = True, ax=ax1)
+
     plt.tight_layout()
     plt.show()
 
