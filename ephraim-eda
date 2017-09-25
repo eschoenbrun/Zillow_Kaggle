@@ -3,11 +3,11 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 %matplotlib inline
-
+import gc
 
 ## Load Data
-df = pd.read_csv('data/properties_2016.csv', header='infer')
-target = pd.read_csv('data/train_2016_v2.csv', header='infer')
+df = pd.read_csv('C:/Users/Stevens/Desktop/BIA 686/zillow/bia_686/data/properties_2016.csv', header='infer')
+target = pd.read_csv('C:/Users/Stevens/Desktop/BIA 686/zillow/bia_686/data/train_2016_v2.csv', header='infer')
 
 # Determine data types 
 # df.iloc[:, np.r_[22,32,34,49,55]]
@@ -70,4 +70,10 @@ for i, col in enumerate(num_data.columns[2:]):
     plt.tight_layout()
     plt.show()
 
+# Compute the correlation matrix
+corr = num_data.iloc[:, 1:].corr()
 
+# Draw the heatmap 
+f, ax = plt.subplots(figsize=(20,20))
+ax = sns.heatmap(corr, cmap="coolwarm", fmt='.0%',
+    linecolor='white',linewidths=1, annot=True)
