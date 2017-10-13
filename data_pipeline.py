@@ -7,17 +7,7 @@ import logging
 logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
 
 
-from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.preprocessing import Imputer
-
-# Drop Null/Redundant Cols
-class NumericalSelector(BaseEstimator, TransformerMixin):
-    def __init__(self, attr_names):
-        self.attr_names = attr_names
-    def fit(self, X, y=None):
-        return self
-    def transform(self, X):
-	    return X[self.attr_names].values
 
 def load_data(path_to_data='data', sample_size = None):
 	logging.info('Reading Properties 2016...')
@@ -64,15 +54,16 @@ def load_data(path_to_data='data', sample_size = None):
 		logging.info('Sampling: {} of data'.format(sample_size))
 		joined_data = joined_data.sample(frac=sample_size)
 
-	return joined_data
+	return joined_data, joined_data['logerror'].values
+
 
 def drop_columns(data, drop_cols):
 	# mostly null
-	data = data.drop(drop_nulls_cols, axis=1)
+	data = data.drop(drop_cols, axis=1)
 	data.drop_duplicates(inplace = True)
 
 	return data
-	
+
 
 def columns_after_drop(numeric, categorical, drop_columns):
 	numeric = list(set(numeric) - (set(numeric) & set(drop_columns)))
@@ -80,40 +71,53 @@ def columns_after_drop(numeric, categorical, drop_columns):
 
 	return numeric, categorical
 
-def impute_numerical_var(joined_data, numerical_cols):
-	logging.info('Filling numeric NAs')
 
-	# numerical vars
-	numerical_data = joined_data.copy()
-	numerical_data = numerical_data[numerical_cols]
-	numerical_data_cols = numerical_data.columns
+def impute_numerical_var(joined_data, numerical_cols, imputation= None):
+    logging.info('Filling numeric NAs')
+    if imputation:
+        for col, val in imputations_numeric.items():
+            if col in properties.columns:
+                properties[col].fillna(val, inplace=True)
+                return properties
+    else:
+    # numerical vars
+        numerical_data = joined_data.copy().reset_index()
+        numerical_data = numericaΩl_data[numerical_cols]
+        numerical_data_cols = numerical_data.columns
 
-	numeric_imp  = Imputer(strategy='median', axis=0)     
-	numerical_data = pd.DataFrame(numeric_imp.fit_transform(numerical_data.values), columns=numerical_data_cols)
+        numeric_imp  = Imputer(strategy='median', axis=0)     
+        numerical_data = pd.DataFrame(numeric_imp.fit_transform(numerical_data.values), columns=numerical_data_cols)
 
-	return numerical_data,  {key:val for key,val in  zip(numerical_data_cols, numeric_imp.statistics_)}
+        return numerical_data,  {key:val for key,val in  zip(numerical_data_cols, numeric_imp.statistics_)}
 
 
 def impute_categorical_var(joined_data, categorical_cols):
 	# categorical vars
-	categorical_data = joined_data.copy()
+	categorical_data = joined_data.copy().reset_index()
 	categorical_data  = categorical_data[categorical_cols]
 
 	if 'hashottuborspa' in categorical_cols:
 		categorical_data['hashottuborspa']=categorical_data['hashottuborspa'].apply(lambda x: 1 if x == 'True' else 0)
 
+	if 'taxdelinquencyflag' in categorical_cols:
+		categorical_data['taxdelinquencyflag']=categorical_data['hashottuborspa'].apply(lambda x: 1 if str(x).strip().lower() == 'y' else 0)
+
 	for c, dtype in zip(categorical_data.columns, categorical_data.dtypes):
-		categorical_data[c] = categorical_data[c].apply(lambda x: str(x))
+		categorical_data[c] = categorical_data[c].apply(lambda x: x if pd.isnull(x) else str(x))
 
 	categorical_data_cols = categorical_data.columns
 
 	most_frequent_lst = []
-
+    
+	logging.info('Using most frequent...')
+    
 	for col in categorical_data_cols:
-		print("Filling NA: {}".format(col))
+		logging.info("Filling NA: {}".format(col))
 		# logging.info("Filling NA: {}".format(col))
-		most_frequent_lst.append(categorical_data[col].value_counts().index[0])
-		categorical_data[col]=categorical_data[col].fillna(most_frequent[-1])
+		mk=categorical_data[col].notnull()
+		value_counts = categorical_data[mk][col].value_counts()
+		most_frequent_lst.append(value_counts.index[0])
+		categorical_data[col].fillna(most_frequent_lst[-1], inplace=True)
 
 	return categorical_data, {key:val for key,val in zip(categorical_data_cols, most_frequent_lst)}
 
@@ -135,17 +139,24 @@ categorical_cols = ['airconditioningtypeid','architecturalstyletypeid','building
 drop_cols = ['buildingclasstypeid','propertyzoningdesc','garagetotalsqft',	'garagecarcnt',	'numberofstories',	'poolcnt',	'threequarterbathnbr',	
 	'fireplacecnt',	'finishedfloor1squarefeet','finishedsquarefeet50','finishedsquarefeet15',
 	'finishedsquarefeet12', 'yardbuildingsqft17',	'poolsizesum',	'finishedsquarefeet6',	'yardbuildingsqft26',	
-	'basementsqft',	'finishedsquarefeet13','assessmentyear','calculatedbathnbr','parcelid',
+	'basementsqft',	'finishedsquarefeet13','assessmentyear','calculatedbathnbr',
 	'rawcensustractandblock', 'censustractandblock','regionidzip','regionidcounty','regionidcity','regionidneighborhood',
 	'regionidneighborhood','taxvaluedollarcnt','buildingclasstypeid','fireplaceflag','storytypeid']	
 
+# use pipeline
 
-joined_data = load_data(path_to_data='data', sample_size=0.1)
-
+joined_data, logerror_var = load_data(path_to_data='data')
 joined_data = drop_columns(joined_data, drop_cols)
 
-# if you need to drop a column, add it to categorical_cols
-numerical_cols, categorical_cols = columns_after_drop(numerical_cols, categorical_cols, drop_cols)
+# if you need to drop a column, add it to drop_cols
+numeric_cols, categorical_cols = columns_after_drop(numeric_cols, categorical_cols, drop_cols)
+
+numeric_data, imputations_numeric = impute_numerical_var(joined_data, numeric_cols)
+
+categorical_data, imputations_categorical = impute_categorical_var(joined_data, categorical_cols)
+
+
+
 
 
 
